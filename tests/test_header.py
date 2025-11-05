@@ -1,25 +1,21 @@
 from playwright.sync_api import Page, expect
 from utils.config import Config
 from pages.header import Header
-from datetime import date, timedelta
+from utils.data import Data
     
 def test_search(page: Page):
     header = Header(page)
     header.open(Config.BASE_URL)
     header.wait_page()
-    today = date.today()
-    start_date = today + timedelta(days=5)
-    end_date = today + timedelta(days=12)
-    start_str = start_date.strftime("%d.%m.%Y")
-    end_str = end_date.strftime("%d.%m.%Y")
-    start_for_url = start_date.strftime("%d%m")
-    end_for_url = end_date.strftime("%d%m")
+
+    start_form, end_form, start_url, end_url = Data.get_formatted_range(5, 12)
+
     header.fill_origin("Москва")
     header.fill_destination("Тайбей")
-    header.select_start_date(start_str)
-    header.select_end_date(end_str)
+    header.select_start_date(start_form)
+    header.select_end_date(end_form)
     header.click_button_search()
-    header.assert_url(f"{Config.BASE_URL}?params=MOW{start_for_url}TPE{end_for_url}1&with_request=true")
+    header.assert_url(f"{Config.BASE_URL}?params=MOW{start_url}TPE{end_url}1&with_request=true")
 
 def test_origin_valid_city(page: Page):
     header = Header(page)
