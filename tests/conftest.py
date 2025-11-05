@@ -4,6 +4,14 @@ from utils.config import Config
 from utils.mail_file_sender import MailReporter
 import pytest
 import os
+from pages.header import Header
+
+@pytest.fixture
+def header(page) -> Header:
+    header = Header(page)
+    page.goto(Config.BASE_URL)
+    header.wait_page()
+    return header
 
 def pytest_sessionfinish(session, exitstatus):
     report_path = "reports/report.html"
