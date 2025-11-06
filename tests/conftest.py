@@ -5,6 +5,7 @@ from utils.mail_file_sender import MailReporter
 import pytest
 import os
 from pages.header import Header
+from datetime import datetime
 
 @pytest.fixture
 def header(page) -> Header:
@@ -32,3 +33,16 @@ def page(browser):
     page = context.new_page()
     yield page
     context.close()
+
+@pytest.hookimpl(tryfirst=True, hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    outcome = yield
+    result = outcome.get_result()
+
+    if result.when == "call" and result.failed:
+        page = item.funcargs.get("page")
+        if page:
+            os.makedirs("reports/screenshots", exist_ok=True)
+            file_path = f"reports/screenshots/{item.name}.png"
+            page.screenshot(path=file_path, full_page=True)
+            print(f"\n Screenshot saved: {file_path}")
