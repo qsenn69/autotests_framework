@@ -1,7 +1,6 @@
 import pytest
 from playwright.sync_api import sync_playwright, Browser, Page
 from utils.config import Config
-from utils.mail_file_sender import MailReporter
 import os
 from pages.header import Header
 from datetime import datetime
@@ -12,11 +11,6 @@ def header(page) -> Header:
     page.goto(Config.BASE_URL)
     header.wait_page()
     return header
-
-def pytest_sessionfinish(session, exitstatus):
-    report_path = "reports/report.html"
-    if os.path.exists(report_path):
-        MailReporter.send_report(report_path)
 
 @pytest.fixture(scope="session")
 def browser():
