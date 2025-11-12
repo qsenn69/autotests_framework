@@ -3,7 +3,6 @@ from playwright.sync_api import sync_playwright, Browser, Page
 from utils.config import Config
 import os
 from pages.header import Header
-from datetime import datetime
 
 @pytest.fixture
 def header(page) -> Header:
